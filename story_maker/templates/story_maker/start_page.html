@@ -1,0 +1,188 @@
+{% load static %} 
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMAGO - 당신의 무대</title>
+    <style>
+        /* 폰트는 고전적인 세리프체, 색상은 극장 커튼과 스포트라이트 연상 */
+        body {
+                background-color: #000; /* 전체 배경을 검은색으로 변경 */
+                color: #E0B050; 
+                font-family: 'Times New Roman', Times, serif;
+                text-align: center;
+                padding: 0;
+                margin: 0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                overflow: hidden;
+                position: relative; 
+            }
+
+        /* [추가] 커튼 이미지 배경 */
+        .curtain-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("{% static 'images/curtain_background.png' %}"); /* 투명 커튼 이미지 */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 10; /* 콘텐츠 위에 오도록 */
+            pointer-events: none; /* 클릭 이벤트가 커튼을 통과하도록 */
+        }
+
+        /* [추가] 무대 배경 (커튼 뒤에 보일 검은색 배경, 스포트라이트 효과 포함) */
+        .stage-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #1a1a1a; /* 아주 어두운 회색 또는 검정색 */
+            /* 스포트라이트 효과 */
+            background-image: 
+                radial-gradient(circle at 50% 10%, rgba(255, 255, 0, 0.2) 0%, transparent 40%), /* 상단 중앙 스포트라이트 */
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.05) 0%, transparent 60%), /* 좌하단 은은한 빛 */
+                radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.05) 0%, transparent 60%); /* 우하단 은은한 빛 */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: 2; /* 커튼보다 아래, 콘텐츠보다 아래 */
+        }
+        
+        /* [추가] 빛나는 입자 효과 (선택 사항, 복잡도 증가) */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%239C9C9C' fill-opacity='0.1' fill-rule='evenodd'%3E%3Cpath d='M.333 2.167L0 2.5V6h6V0H2.5L2.167.333zM2.5 0h3.5v3.5L3.5 6H0V2.5L2.5 0zm-.333 4.167L0 4.5V6h4.5L6 4.5V0h-3.5L0 2.5l2.167 1.667z'/%3E%3C/g%3E%3C/svg%3E");
+            z-index: 3; /* 무대 배경 위, 커튼 아래 */
+            pointer-events: none;
+            opacity: 0.5; /* 입자 불투명도 조절 */
+        }
+
+
+        .stage-curtain {
+            background-color: #550000; 
+            border: 5px solid #E0B050;
+            padding: 30px 20px; /* 모바일에서 패딩을 줄임 */
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.5); 
+            max-width: 90%; /* PC에서는 최대 600px 유지 */
+            width: 90%; /* 모바일에서는 화면 너비의 90%를 사용 */
+            animation: fadeIn 2s ease-in-out;
+            z-index: 10; 
+            position: relative; 
+            /* [추가] 모바일 뷰에서 중앙 콘텐츠 박스가 너무 아래로 내려가지 않도록 마진 조정 */
+            margin-top: -10vh; /* 필요에 따라 커튼이 열린 부분의 중앙으로 박스를 끌어올림 */
+        }
+
+        .logo {
+            font-size: 80px;
+            font-weight: bold;
+            letter-spacing: 15px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* 로고 마크: 뇌/책/스포트라이트 컨셉을 텍스트로 대체 */
+        .logo::before {
+            content: "🎭"; /* 연극 마스크 이모지 */
+            display: block;
+            font-size: 50px;
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            font-size: 18px;
+            font-style: italic;
+            margin-bottom: 40px;
+            line-height: 1.5;
+        }
+
+        /* [추가] 중앙 콘텐츠 박스 내부의 배경 */
+        .content-box {
+            background-color: #550000; /* 원래의 버건디 배경색 */
+            padding: 20px; /* 약간의 내부 패딩 */
+        }
+
+        .start-button {
+            background-color: #FFD700; /* 금색 버튼 */
+            color: #330000; /* 텍스트는 배경색과 대비되게 */
+            padding: 15px 30px;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .start-button:hover {
+            background-color: #E6C300;
+            transform: scale(1.05);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ------------------------------------------- */
+        /* [추가] 모바일 최적화 (768px 이하) */
+        /* ------------------------------------------- */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 50px; /* 로고 폰트 크기 줄임 */
+                letter-spacing: 10px;
+                margin-bottom: 15px;
+            }
+            
+            .logo::before {
+                font-size: 35px; /* 이모지 크기 줄임 */
+            }
+
+            .tagline {
+                font-size: 16px; /* 태그라인 폰트 크기 줄임 */
+                margin-bottom: 30px;
+            }
+
+            .start-button {
+                padding: 12px 25px;
+                font-size: 18px; /* 버튼 폰트 크기 줄임 */
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="stage-background"></div> 
+    <div class="particles"></div> 
+    <div class="curtain-overlay"></div> 
+    
+    <div class="stage-curtain">
+        <div class="content-box"> 
+            <div class="logo">IMAGO</div>
+            <p class="tagline">
+                당신의 하루가 곧 무대가 됩니다. 무의식 속 선택들이 펼쳐내는,<br>
+                당신만을 위한 단 하나의 이야기가 곧 시작됩니다.
+            </p>
+            
+            <a href="{% url 'mbti_input' %}">
+                <button class="start-button">
+                    막을 올리다: 시작하기
+                </button>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

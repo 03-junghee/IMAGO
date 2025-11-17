@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>IMAGO - ACT. 0</title>
+    <style>
+        body {
+            background-color: #330000;
+            color: #E0B050;
+            font-family: 'Times New Roman', Times, serif;
+            text-align: center;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background-color: #550000;
+            padding: 40px;
+            border: 3px solid #E0B050;
+            max-width: 500px;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+        }
+        h2 {
+            border-bottom: 1px solid #E0B050;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 20px;
+            width: 150px;
+            text-align: center;
+            margin-top: 15px;
+            border: 2px solid #E0B050;
+            background-color: #330000;
+            color: white;
+        }
+        .submit-button {
+            background-color: #FFD700;
+            color: #330000;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>[ACT. 0] 이야기의 주인공을 소개합니다.</h2>
+        <p>IMAGO AI가 당신의 머릿속을 가장 생생하게 형상화할 수 있도록, 주인공의 성격을 입력해주세요.</p>
+        
+        <form method="POST" action="{% url 'mbti_input' %}">
+            {% csrf_token %} <label for="mbti">MBTI (예: ISTJ)</label><br>
+            <input type="text" id="mbti" name="mbti" maxlength="4" required><br>
+            
+            {% if error %}
+                <p style="color: #FF6347; margin-top: 15px;">{{ error }}</p>
+            {% endif %}
+
+            <button type="submit" class="submit-button">
+                MBTI 입력 완료 후 다음 막으로!
+            </button>
+        </form>
+    </div>
+</body>
+</html>

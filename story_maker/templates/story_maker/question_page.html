@@ -1,0 +1,122 @@
+{% load static %} 
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMAGO - ACT. {{ question_num }}</title>
+    <style>
+        body {
+            background-color: #330000;
+            color: #E0B050;
+            font-family: 'Times New Roman', Times, serif;
+            text-align: center;
+            padding: 50px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .stage-box {
+            background-color: #550000;
+            padding: 40px;
+            border: 5px solid #E0B050;
+            max-width: 800px;
+            width: 90%;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+            margin: 20px 0;
+            animation: curtainOpen 1.5s ease-out; 
+        }
+        h1 {
+            color: #FFD700;
+            border-bottom: 2px solid #E0B050;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+        }
+        .description {
+            font-size: 1.1em;
+            font-style: italic;
+            margin-bottom: 30px;
+        }
+        .choice-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        .choice-button {
+            flex-basis: calc(50% - 20px);
+            background-color: #771111;
+            color: #E0B050;
+            padding: 20px;
+            border: 2px solid #E0B050;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.3s;
+            text-align: center;
+        }
+        .choice-button:hover {
+            background-color: #992222;
+            transform: scale(1.03);
+        }
+        .error {
+            color: #FF6347;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+        
+        .image-container {
+            width: 100%;
+            max-height: 400px;
+            margin: 20px auto;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 3px solid #E0B050;
+        }
+        .question-image {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        @keyframes curtainOpen {
+            from { opacity: 0; transform: scaleY(0.5); }
+            to { opacity: 1; transform: scaleY(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="stage-box">
+        <h1>{{ question_num }}. {{ question|linebreaksbr }}</h1>
+        
+        <div class="image-container">
+            <img src="{% static image_file %}" 
+                alt="질문 {{ question_num }} 무대 이미지" 
+                class="question-image">
+        </div>
+
+        <p class="description">{{ description }}</p>
+        
+        {% if error %}
+            <p class="error">⚠️ {{ error }}</p>
+        {% endif %}
+
+        <form method="POST" action="{% url 'question' question_num=question_num %}">
+            {% csrf_token %}
+            
+            <div class="choice-container">
+                {% for choice_num, choice_text in choices.items %}
+                    <button type="submit" name="choice" value="{{ choice_num }}" class="choice-button">
+                        <span style="color: #FFD700; font-size: 1.2em;">{{ choice_num }}번:</span> {{ choice_text }}
+                    </button>
+                {% endfor %}
+            </div>
+        </form>
+    </div>
+</body>
+</html>

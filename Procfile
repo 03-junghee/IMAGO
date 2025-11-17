@@ -1,0 +1,1 @@
+web: gunicorn imago_project.wsgi:application
